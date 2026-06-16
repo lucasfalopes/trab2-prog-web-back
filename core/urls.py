@@ -17,11 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from users.views import CustomTokenObtainPairView, ChangePasswordView
+from users.views import (
+    CustomTokenObtainPairView, ChangePasswordView,
+    RequestPasswordResetView, AdminPasswordResetRequestListView, AdminApprovePasswordResetView
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/users/change-password/', ChangePasswordView.as_view(), name='change_password'),
+    path('api/users/reset-request/', RequestPasswordResetView.as_view(), name='request_reset'),
+    path('api/admin/reset-requests/', AdminPasswordResetRequestListView.as_view(), name='admin_list_requests'),
+    path('api/admin/reset-requests/<int:pk>/action/', AdminApprovePasswordResetView.as_view(), name='admin_approve_request'),
 ]
