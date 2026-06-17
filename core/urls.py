@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from rest_framework_simplejwt.views import TokenRefreshView
 from users.views import (
     CustomTokenObtainPairView, ChangePasswordView,
@@ -30,4 +30,5 @@ urlpatterns = [
     path('api/users/reset-request/', RequestPasswordResetView.as_view(), name='request_reset'),
     path('api/admin/reset-requests/', AdminPasswordResetRequestListView.as_view(), name='admin_list_requests'),
     path('api/admin/reset-requests/<int:pk>/action/', AdminApprovePasswordResetView.as_view(), name='admin_approve_request'),
+    path('api/', include('devices.urls')),
 ]

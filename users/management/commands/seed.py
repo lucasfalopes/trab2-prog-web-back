@@ -1,7 +1,19 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from devices.models import Device
 
 User = get_user_model()
+
+DEVICES = [
+    {'name': 'Monitor Cardíaco MC-200',  'device_type': 'Monitor',     'status': 'Disponível', 'location': 'UTI - Leito 1'},
+    {'name': 'Ventilador Pulmonar VP-10','device_type': 'Ventilador',  'status': 'Em uso',     'location': 'UTI - Leito 3'},
+    {'name': 'Bomba de Infusão BI-500',  'device_type': 'Bomba',       'status': 'Em uso',     'location': 'Enfermaria A'},
+    {'name': 'Desfibrilador DEF-3000',   'device_type': 'Desfibrilador','status': 'Disponível','location': 'Pronto Socorro'},
+    {'name': 'Oxímetro OX-100',          'device_type': 'Oxímetro',    'status': 'Manutenção', 'location': 'Almoxarifado'},
+    {'name': 'Cadeira de Rodas CR-01',   'device_type': 'Mobilidade',  'status': 'Disponível', 'location': 'Recepção'},
+    {'name': 'Eletrocardiógrafo ECG-7',  'device_type': 'Diagnóstico', 'status': 'Em uso',     'location': 'Cardiologia'},
+    {'name': 'Nebulizador NEB-50',       'device_type': 'Respiratório','status': 'Manutenção', 'location': 'Manutenção'},
+]
 
 USERS = [
     {
@@ -28,6 +40,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self._seed_users()
+        self._seed_devices()
         self.stdout.write(self.style.SUCCESS('Seed concluído com sucesso.'))
 
     def _seed_users(self):
@@ -47,3 +60,18 @@ class Command(BaseCommand):
                 self.stdout.write(f"  Criado: {user.username} ({user.role})")
             else:
                 self.stdout.write(f"  Já existe: {user.username} ({user.role})")
+
+    def _seed_devices(self):
+        for data in DEVICES:
+            device, created = Device.objects.get_or_create(
+                name=data['name'],
+                defaults={
+                    'device_type': data['device_type'],
+                    'status': data['status'],
+                    'location': data['location'],
+                },
+            )
+            if created:
+                self.stdout.write(f"  Criado dispositivo: {device.name} [{device.status}]")
+            else:
+                self.stdout.write(f"  Já existe dispositivo: {device.name}")
