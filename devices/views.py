@@ -6,6 +6,10 @@ from users.permissions import IsAdminOrEngineer
 
 
 class DeviceViewSet(viewsets.ModelViewSet):
+    """
+    Endpoint GET /devices (Listagem) e demais operações CRUD.
+    Protegido para exigir autenticação, e restringe ações restritas aos administradores e engenheiros.
+    """
     serializer_class = DeviceSerializer
 
     def get_queryset(self):
