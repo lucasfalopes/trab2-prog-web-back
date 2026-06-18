@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Device(models.Model):
     STATUS_CHOICES = [
         ('Disponível', 'Disponível'),
