@@ -23,6 +23,8 @@ from users.views import (
     RequestPasswordResetView, AdminPasswordResetRequestListView, AdminApprovePasswordResetView
 )
 
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
