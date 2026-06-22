@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'drf_spectacular',
     'users',
     'devices',
 ]
@@ -142,4 +143,20 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
     'EXCEPTION_HANDLER': 'core.exceptions.custom_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API — Sistema de Gerenciamento de Dispositivos Hospitalares',
+    'DESCRIPTION': (
+        'API REST para gerenciamento de dispositivos hospitalares. '
+        'Dois perfis de acesso: ADMIN (Engenheiro) com CRUD completo e '
+        'CLINICAL (Médico) com acesso somente leitura.\n\n'
+        '**Autenticação:** JWT Bearer Token — obtenha o token em `/api/token/` '
+        'e envie no header `Authorization: Bearer <token>`.\n\n'
+        '**Grupo:** Diogo Marassi e Lucas Lopes'
+    ),
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
 }

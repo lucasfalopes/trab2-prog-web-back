@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenRefreshView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerUIView
 from users.views import (
     CustomTokenObtainPairView, ChangePasswordView,
     RequestPasswordResetView, AdminPasswordResetRequestListView, AdminApprovePasswordResetView
@@ -24,11 +25,23 @@ from users.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # Documentação
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerUIView.as_view(url_name='schema'), name='swagger-ui'),
+
+    # Autenticação JWT
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # Usuários
     path('api/users/change-password/', ChangePasswordView.as_view(), name='change_password'),
     path('api/users/reset-request/', RequestPasswordResetView.as_view(), name='request_reset'),
+
+    # Admin — solicitações de reset
     path('api/admin/reset-requests/', AdminPasswordResetRequestListView.as_view(), name='admin_list_requests'),
     path('api/admin/reset-requests/<int:pk>/action/', AdminApprovePasswordResetView.as_view(), name='admin_approve_request'),
+
+    # Dispositivos
     path('api/', include('devices.urls')),
 ]
