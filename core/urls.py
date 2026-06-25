@@ -18,10 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework.routers import DefaultRouter
 from users.views import (
     CustomTokenObtainPairView, ChangePasswordView,
-    RequestPasswordResetView, AdminPasswordResetRequestListView, AdminApprovePasswordResetView
+    RequestPasswordResetView, AdminPasswordResetRequestListView, AdminApprovePasswordResetView,
+    AdminUserViewSet
 )
+
+router = DefaultRouter()
+router.register(r'admin/users', AdminUserViewSet, basename='admin-users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,6 +46,9 @@ urlpatterns = [
     # Admin — solicitações de reset
     path('api/admin/reset-requests/', AdminPasswordResetRequestListView.as_view(), name='admin_list_requests'),
     path('api/admin/reset-requests/<int:pk>/action/', AdminApprovePasswordResetView.as_view(), name='admin_approve_request'),
+
+    # Admin — Gestão de Usuários
+    path('api/', include(router.urls)),
 
     # Dispositivos
     path('api/', include('devices.urls')),

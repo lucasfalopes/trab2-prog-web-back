@@ -2,7 +2,7 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
 class IsAdminOrEngineer(BasePermission):
-    """Allows access only to users with the ADMIN role."""
+    """Bloqueia qualquer requisição de usuários CLINICAL — usado nas operações de escrita."""
 
     def has_permission(self, request, view):
         return bool(
@@ -13,7 +13,7 @@ class IsAdminOrEngineer(BasePermission):
 
 
 class IsClinicalOrReadOnly(BasePermission):
-    """Allows read-only access to CLINICAL users; full access to ADMIN users."""
+    """SAFE_METHODS (GET/HEAD/OPTIONS) liberados para qualquer autenticado; escrita exige ADMIN."""
 
     def has_permission(self, request, view):
         if not request.user or not request.user.is_authenticated:

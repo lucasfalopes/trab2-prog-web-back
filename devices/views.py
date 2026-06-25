@@ -116,6 +116,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
         return queryset
 
     def get_permissions(self):
+        # Leituras abertas a qualquer usuário autenticado (médico incluso); escrita exige ADMIN
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminOrEngineer()]
         return [IsAuthenticated()]
@@ -148,6 +149,7 @@ class UtensilViewSet(viewsets.ModelViewSet):
         return queryset
 
     def get_permissions(self):
+        # Mesma lógica do DeviceViewSet: escrita restrita a ADMIN
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsAdminOrEngineer()]
         return [IsAuthenticated()]

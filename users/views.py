@@ -1,16 +1,17 @@
-from rest_framework import status, generics
+from rest_framework import status, generics, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import get_user_model
 from django.utils.crypto import get_random_string
-from drf_spectacular.utils import extend_schema, OpenApiResponse, inline_serializer
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse, inline_serializer
 from rest_framework import serializers as drf_serializers
 from .models import PasswordResetRequest
 from .serializers import (
     CustomTokenObtainPairSerializer, ChangePasswordSerializer,
-    PasswordResetRequestSerializer, RequestResetSerializer, ApproveResetSerializer
+    PasswordResetRequestSerializer, RequestResetSerializer, ApproveResetSerializer,
+    UserSerializer, UserCreateSerializer
 )
 
 User = get_user_model()
@@ -186,3 +187,31 @@ class AdminApprovePasswordResetView(generics.GenericAPIView):
                 "message": "Solicitação aprovada.",
                 "temporary_password": temp_password
             })
+
+from rest_framework import mixins
+
+@extend_schema_view(
+    list=extend_schema(tags=['Admin — Gestão de Usuários'], summary='Listar usuários'),
+    create=extend_schema(tags=['Admin — Gestão de Usuários'], summary='Criar usuário'),
+    retrieve=extend_schema(tags=['Admin — Gestão de Usuários'], summary='Detalhar usuário'),
+    update=extend_schema(tags=['Admin — Gestão de Usuários'], summary='Atualizar usuário'),
+    partial_update=extend_schema(tags=['Admin — Gestão de Usuários'], summary='Atualizar parcialmente usuário'),
+    destroy=extend_schema(tags=['Admin — Gestão de Usuários'], summary='Remover usuário'),
+)
+class AdminUserViewSet(mixins.CreateModelMixin,
+                       mixins.ListModelMixin,
+                       mixins.RetrieveModelMixin,
+                       mixins.UpdateModelMixin,
+                       mixins.DestroyModelMixin,
+                       viewsets.GenericViewSet):
+    permission_classes = [IsAdminUser]
+
+    def get_queryset(self):
+        return User.objects.all().order_by('username')
+
+    def get_serializer_class(self):
+        # UserCreateSerializer trata o campo password (write-only, hashing); os demais usam UserSerializer
+        if self.action == 'create':
+            return UserCreateSerializer
+        return UserSerializer
+
