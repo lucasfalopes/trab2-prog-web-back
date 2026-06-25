@@ -7,12 +7,14 @@ class User(AbstractUser):
         ('CLINICAL', 'Médico/Equipe Clínica'),
     )
     role = models.CharField(
-        max_length=20, 
-        choices=ROLE_CHOICES, 
+        max_length=20,
+        choices=ROLE_CHOICES,
         default='CLINICAL',
         verbose_name='Perfil'
     )
     must_change_password = models.BooleanField(default=False)
+    # Override para forçar unicidade — AbstractUser permite emails duplicados por padrão
+    email = models.EmailField(unique=True)
 
     def __str__(self):
         return f"{self.username} - {self.get_role_display()}"

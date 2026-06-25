@@ -1,6 +1,7 @@
 # Sistema de Gerenciamento de Ativos Hospitalares - Backend
 
-**Autores:** Lucas e Diogo
+- Lucas Lopes - 2220647
+- Diogo Marassi - 2220354
 
 ## Escopo do Projeto
 Este projeto é o Backend de um sistema de gerenciamento de dispositivos médicos e ativos de um hospital. Desenvolvido inteiramente em Django (sem uso de templates HTML/CSS, seguindo o requisito), ele provê uma API RESTful completa para atender o Frontend.
@@ -63,23 +64,11 @@ Os usuários de teste criados pelo script `seed` são:
 ## Funcionalidades Testadas (Testes Manuais Realizados)
 
 ### O que funcionou (Testado e Aprovado)
-* ✅ Login de usuário e geração de token JWT.
-* ✅ Restrição de acesso em endpoints protegidos (401 Unauthorized retornado corretamente caso o acesso seja anônimo).
-* ✅ Solicitação de "Esqueci a Senha" via fluxo de aprovação administrativo (Engenheiro) no backend.
-* ✅ Todas as 4 operações (CRUD) da API de dispositivos funcionando de acordo.
-* ✅ Documentação no Swagger UI renderizando perfeitamente todos os *schemas*.
+* Login de usuário e geração de token JWT.
+* Restrição de acesso em endpoints protegidos (401 Unauthorized retornado corretamente caso o acesso seja anônimo).
+* Solicitação de "Esqueci a Senha" via fluxo de aprovação administrativo (Engenheiro) no backend.
+* Todas as 4 operações (CRUD) da API de dispositivos funcionando de acordo.
+* Documentação no Swagger UI renderizando perfeitamente todos os *schemas*.
 
 ### O que não funcionou
-* ❌ O envio automático de e-mail com link de reset de senha foi cogitado inicialmente, mas, devido a limitações de configuração e chaves de servidor SMTP em ambientes de nuvem variados, optamos por não implementar o disparo de e-mails reais. A funcionalidade foi plenamente substituída com sucesso por um painel onde o administrador aprova manualmente as solicitações. Relatamos isso como escolha de design.
-
-## Links Relevantes (Preencher no EaD)
-* **Repositório Backend:** [Inserir Link Aqui]
-* **Repositório Frontend:** [Inserir Link Aqui]
-* **Site Backend (Deploy):** [Inserir Link Aqui]
-* **Site Frontend (Deploy):** [Inserir Link Aqui]
-
-## Imagens do Sistema (Backend)
-*(Lembre-se de subir 3 prints reais nas pastas docs/ e ajustar os links abaixo antes da entrega final)*
-1. ![Swagger - Visão Geral](docs/swagger-1.png)
-2. ![Swagger - Endpoints de Dispositivos](docs/swagger-2.png)
-3. ![Swagger - Endpoints de Autenticação](docs/swagger-3.png)
+* O envio automático de e-mail com link de reset de senha foi cogitado inicialmente, mas, devido a limitações de configuração e chaves de servidor SMTP em ambientes de nuvem variados, optamos por não implementar o disparo de e-mails reais. A funcionalidade foi plenamente substituída com sucesso por um painel onde o administrador aprova manualmente as solicitações. Relatamos isso como escolha de design.

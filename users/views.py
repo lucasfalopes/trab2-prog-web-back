@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from django.utils.crypto import get_random_string
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse, inline_serializer
 from rest_framework import serializers as drf_serializers
@@ -113,7 +114,7 @@ class IsAdminUser(BasePermission):
     tags=['Admin — Recuperação de Senha'],
     summary='Listar solicitações de reset pendentes',
     description=(
-        'Retorna todas as solicitações de recuperação de senha com status PENDING. '
+        'Retorna todas as solicitações de recuperação de senha (PENDING, APPROVED e REJECTED). '
         'Restrito a usuários com perfil ADMIN.'
     ),
     responses={
@@ -128,7 +129,7 @@ class AdminPasswordResetRequestListView(generics.ListAPIView):
     pagination_class = None
 
     def get_queryset(self):
-        return PasswordResetRequest.objects.filter(status='PENDING').order_by('-created_at')
+        return PasswordResetRequest.objects.all().order_by('-created_at')
 
 
 @extend_schema(
@@ -174,18 +175,18 @@ class AdminApprovePasswordResetView(generics.GenericAPIView):
             return Response({"message": "Solicitação recusada com sucesso."})
 
         elif action == 'APPROVE':
-            user = reset_req.user
             temp_password = get_random_string(length=12)
-            user.set_password(temp_password)
-            user.must_change_password = True
-            user.save()
+            User.objects.filter(pk=reset_req.user_id).update(
+                password=make_password(temp_password),
+                must_change_password=True,
+            )
 
             reset_req.status = 'APPROVED'
             reset_req.save()
 
             return Response({
                 "message": "Solicitação aprovada.",
-                "temporary_password": temp_password
+                "temporary_password": temp_password,
             })
 
 from rest_framework import mixins
