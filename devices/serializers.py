@@ -1,5 +1,6 @@
+# pyrefly: ignore [missing-import]
 from rest_framework import serializers
-from .models import Device
+from .models import Device, Utensil
 
 
 class DeviceSerializer(serializers.ModelSerializer):
@@ -10,4 +11,13 @@ class DeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
         fields = ['id', 'name', 'device_type', 'status', 'location', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+class UtensilSerializer(serializers.ModelSerializer):
+    """
+    Serializer base para a validação dos dados de entrada e saída do modelo Utensil.
+    """
+    class Meta:
+        model = Utensil
+        fields = ['id', 'name', 'utensil_type', 'quantity', 'location', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']

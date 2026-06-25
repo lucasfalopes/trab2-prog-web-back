@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from devices.models import Device
+from devices.models import Device, Utensil
 
 User = get_user_model()
 
@@ -13,6 +13,12 @@ DEVICES = [
     {'name': 'Cadeira de Rodas CR-01',   'device_type': 'Mobilidade',  'status': 'Disponível', 'location': 'Recepção'},
     {'name': 'Eletrocardiógrafo ECG-7',  'device_type': 'Diagnóstico', 'status': 'Em uso',     'location': 'Cardiologia'},
     {'name': 'Nebulizador NEB-50',       'device_type': 'Respiratório','status': 'Manutenção', 'location': 'Manutenção'},
+]
+
+UTENSILS = [
+    {'name': 'Bisturi Elétrico', 'utensil_type': 'Cirúrgico', 'quantity': 15, 'location': 'Centro Cirúrgico'},
+    {'name': 'Luvas Cirúrgicas', 'utensil_type': 'EPI', 'quantity': 1000, 'location': 'Almoxarifado'},
+    {'name': 'Pinça Kelly', 'utensil_type': 'Cirúrgico', 'quantity': 50, 'location': 'Sala de Sutura'},
 ]
 
 USERS = [
@@ -41,6 +47,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self._seed_users()
         self._seed_devices()
+        self._seed_utensils()
         self.stdout.write(self.style.SUCCESS('Seed concluído com sucesso.'))
 
     def _seed_users(self):
@@ -75,3 +82,18 @@ class Command(BaseCommand):
                 self.stdout.write(f"  Criado dispositivo: {device.name} [{device.status}]")
             else:
                 self.stdout.write(f"  Já existe dispositivo: {device.name}")
+
+    def _seed_utensils(self):
+        for data in UTENSILS:
+            utensil, created = Utensil.objects.get_or_create(
+                name=data['name'],
+                defaults={
+                    'utensil_type': data['utensil_type'],
+                    'quantity': data['quantity'],
+                    'location': data['location'],
+                },
+            )
+            if created:
+                self.stdout.write(f"  Criado utensílio: {utensil.name} [Qtd: {utensil.quantity}]")
+            else:
+                self.stdout.write(f"  Já existe utensílio: {utensil.name}")

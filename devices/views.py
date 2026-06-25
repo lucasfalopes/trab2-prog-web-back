@@ -1,9 +1,13 @@
+# pyrefly: ignore [missing-import]
 from rest_framework import viewsets
+# pyrefly: ignore [missing-import]
 from rest_framework.permissions import IsAuthenticated
+# pyrefly: ignore [missing-import]
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse
+# pyrefly: ignore [missing-import]
 from drf_spectacular.types import OpenApiTypes
-from .models import Device
-from .serializers import DeviceSerializer
+from .models import Device, Utensil
+from .serializers import DeviceSerializer, UtensilSerializer
 from users.permissions import IsAdminOrEngineer
 
 
@@ -108,6 +112,38 @@ class DeviceViewSet(viewsets.ModelViewSet):
         search = self.request.query_params.get('search')
         if search:
             queryset = queryset.filter(name__icontains=search) | queryset.filter(device_type__icontains=search)
+
+        return queryset
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAdminOrEngineer()]
+        return [IsAuthenticated()]
+
+@extend_schema_view(
+    list=extend_schema(
+        tags=['Utensílios'],
+        summary='Listar utensílios',
+        description='Retorna a lista de todos os utensílios cadastrados.',
+        parameters=[
+            OpenApiParameter(name='search', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY, required=False),
+        ],
+    ),
+    create=extend_schema(tags=['Utensílios'], summary='Criar utensílio'),
+    retrieve=extend_schema(tags=['Utensílios'], summary='Detalhar utensílio'),
+    update=extend_schema(tags=['Utensílios'], summary='Atualizar utensílio (PUT)'),
+    partial_update=extend_schema(tags=['Utensílios'], summary='Atualizar utensílio (PATCH)'),
+    destroy=extend_schema(tags=['Utensílios'], summary='Excluir utensílio'),
+)
+class UtensilViewSet(viewsets.ModelViewSet):
+    serializer_class = UtensilSerializer
+
+    def get_queryset(self):
+        queryset = Utensil.objects.all()
+
+        search = self.request.query_params.get('search')
+        if search:
+            queryset = queryset.filter(name__icontains=search) | queryset.filter(utensil_type__icontains=search)
 
         return queryset
 
