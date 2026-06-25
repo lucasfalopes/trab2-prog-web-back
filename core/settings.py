@@ -175,3 +175,9 @@ import dotenv
 dotenv.load_dotenv(BASE_DIR / '.env')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
