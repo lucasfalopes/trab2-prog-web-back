@@ -3,6 +3,9 @@
 - Lucas Lopes - 2220647
 - Diogo Marassi - 2220354
 
+## Links Relevantes
+* **Site Backend (Deploy do Swagger API):** [https://lucasfalopes.pythonanywhere.com/api/docs](https://lucasfalopes.pythonanywhere.com/api/docs)
+
 ## Escopo do Projeto
 Este projeto é o Backend de um sistema de gerenciamento de dispositivos médicos e ativos de um hospital. Desenvolvido inteiramente em Django (sem uso de templates HTML/CSS, seguindo o requisito), ele provê uma API RESTful completa para atender o Frontend.
 O sistema conta com endpoints protegidos por JWT e diferentes níveis de permissão.
@@ -10,11 +13,39 @@ O sistema conta com endpoints protegidos por JWT e diferentes níveis de permiss
 ## O que foi desenvolvido
 * **CRUD de Dispositivos:** Endpoints completos para criar, listar, atualizar e deletar dispositivos médicos.
 * **Autenticação:** Sistema de login seguro com JWT.
-* **Gerência de Senhas:** Fluxo de "esqueci minha senha" onde o usuário solicita a troca e um administrador (Engenheiro) aprova no painel e define uma senha temporária.
-* **Controle de Acesso:** Diferentes visões do sistema. Engenheiros possuem privilégios administrativos (aprovação de reset de senhas, CRUD total) enquanto Médicos possuem acesso restrito aos dispositivos.
+* **Gerência de Senhas:** Fluxo de "esqueci minha senha" onde o usuário solicita a troca e um administrador (Engenheiro) aprova no painel.
+* **Controle de Acesso:** Diferentes visões do sistema. Engenheiros possuem privilégios administrativos (aprovação de reset de senhas, CRUD total) enquanto Médicos possuem acesso restrito.
 * **Documentação OpenAPI (Swagger):** Integração com `drf-spectacular` para documentar todas as rotas e facilitar o uso.
 
-## Como Instalar e Rodar Localmente (Instruções de Uso)
+## Manual do Usuário e Passo a Passo do Swagger
+
+Para interagir com a nossa API na nuvem e testar as rotas, siga este passo a passo documentado:
+
+### 1. Tela Inicial do Swagger
+Ao acessar o link da nossa API, você verá a interface inicial listando todas as rotas disponíveis no sistema.
+
+![Tela Inicial do Swagger](images/TelaInicialSwagger.png)
+
+### 2. Geração de Token (Login)
+Para testar a maioria das rotas (como listar e criar dispositivos), você precisará estar autorizado. Vá na rota `POST /api/token/`, clique em **Try it out** e preencha com o login e senha de um usuário válido. O sistema gerará um token de acesso (`access`). Copie esse token.
+
+![Geração de Token](images/TokenCreate.png)
+
+*Credenciais de teste:*
+* **Engenheiro (Admin):** `username`: `engenheiro` | `password`: `Admin@12345`
+
+### 3. Autorizando o Swagger
+Vá até o topo da página do Swagger e clique no botão verde **Authorize** (ou no ícone do cadeado de qualquer rota protegida). Na caixa de autorização, cole o seu token no campo de valor e clique em *Authorize*. A partir desse momento, todas as suas requisições enviarão o JWT automaticamente!
+
+![Tela Authorize](images/TelaAuthorize.png)
+
+### 4. Uso de Rotas Restritas (Ex: Listar Usuários)
+Agora você pode testar rotas fechadas! Como exemplo, execute o endpoint de listar usuários (`GET /api/admin/users/`).
+*Observação:* Para acessar essa rota especificamente, além do token, o usuário autenticado deve ter a permissão de Administrador (role ADMIN), conforme implementado nas regras de negócio da aplicação.
+
+![Listar Usuários](images/Ex-ListUsers.png)
+
+## Como Instalar e Rodar Localmente
 
 ### Pré-requisitos
 * Python 3.9+
@@ -33,7 +64,7 @@ O sistema conta com endpoints protegidos por JWT e diferentes níveis de permiss
    source .venv/bin/activate
    ```
 
-3. Instale as dependências (já devidamente fixadas para não haver conflitos):
+3. Instale as dependências:
    ```bash
    uv pip install -r requirements.txt
    ```
@@ -48,25 +79,14 @@ O sistema conta com endpoints protegidos por JWT e diferentes níveis de permiss
    ```bash
    python manage.py runserver
    ```
-
-6. Acesse a documentação da API no seu navegador: `http://localhost:8000/api/docs/`
-
-### Testando a API
-Os usuários de teste criados pelo script `seed` são:
-* **Engenheiro (Admin):** `username`: `engenheiro` | `password`: `Admin@12345`
-* **Médico:** `username`: `medico` | `password`: `Medico@12345`
-
-## Manual do Usuário
-* Ao acessar a rota `/api/docs/`, você visualizará a documentação interativa gerada pelo Swagger.
-* Lá, o usuário/desenvolvedor pode expandir qualquer rota, ler sobre os parâmetros necessários, e testar diretamente.
-* Para acessar endpoints restritos (como os de Dispositivos), utilize a rota `/api/token/` para gerar o par JWT. Clique no botão **Authorize** (cadeado) na interface do Swagger e insira o seu token JWT para realizar requisições autenticadas.
+   Acesse a documentação: `http://localhost:8000/api/docs/`
 
 ## Funcionalidades Testadas (Testes Manuais Realizados)
 
 ### O que funcionou (Testado e Aprovado)
 * Login de usuário e geração de token JWT.
 * Restrição de acesso em endpoints protegidos (401 Unauthorized retornado corretamente caso o acesso seja anônimo).
-* Solicitação de "Esqueci a Senha" via fluxo de aprovação administrativo (Engenheiro) no backend.
+* Solicitação de "Esqueci a Senha" via fluxo de aprovação administrativo.
 * Todas as 4 operações (CRUD) da API de dispositivos funcionando de acordo.
 * Documentação no Swagger UI renderizando perfeitamente todos os *schemas*.
 
